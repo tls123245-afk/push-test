@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>폰 알림 테스트</title>
+</head>
+<body style="padding: 30px; font-size: 18px;">
+  <button id="permBtn" style="padding: 15px; width: 100%; margin-bottom: 15px;">
+    1. 알림 권한 허용하기
+  </button>
+  <button id="testBtn" style="padding: 15px; width: 100%;">
+    2. 내 폰에 알림 띄우기
+  </button>
+
+  <script>
+    let swReg = null;
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        swReg = reg;
+      });
+    }
+
+    document.getElementById('permBtn').addEventListener('click', async () => {
+      const res = await Notification.requestPermission();
+      alert('권한 상태: ' + res);
+    });
+
+    document.getElementById('testBtn').addEventListener('click', () => {
+      if (Notification.permission === 'granted' && swReg) {
+        swReg.showNotification('웹 알림 테스트', {
+          body: '스마트폰 웹에서 보낸 알림입니다!'
+        });
+      } else {
+        alert('먼저 1번 버튼을 눌러 알림을 허용해 주세요!');
+      }
+    });
+  </script>
+</body>
+</html>
